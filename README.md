@@ -1,8 +1,9 @@
 <img src="https://repository-images.githubusercontent.com/501008140/0ed3fb4f-c624-4dde-b0fc-471c742e0e24" width="150">
-# NotAgain
-Java program to alert Wordle players if they're about to waste a guess on a previous solution
+# NotAgain  
 
-Dependencies (in addition to JDK 8): https://github.com/kwhat/jnativehook 
+Java program to alert Wordle players if they're about to waste a guess on a previous solution  
+
+Dependencies (in addition to JDK 8): https://github.com/kwhat/jnativehook  
 Note that I have been using what is probably the first release, JNativeHook.jar (no version number), because I initially failed to find the equivalent file for the the latest version, and I cannot now find the link to download that(!) However I have now checked that the latest release (jnativehook-2.2.2.jar) seems to work after updating import statements, and will switch to that later if I do not encounter any issues after further testing.
 
 Resources: WordleSolutions.txt
