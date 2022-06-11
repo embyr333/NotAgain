@@ -1,4 +1,5 @@
 <img src="https://repository-images.githubusercontent.com/501008140/0ed3fb4f-c624-4dde-b0fc-471c742e0e24" width="150">
+
 # NotAgain  
 
 Java program to alert Wordle players if they're about to waste a guess on a previous solution  
