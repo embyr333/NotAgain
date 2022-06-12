@@ -27,37 +27,25 @@ accidentally resetting my Wordle cookies and losing 'stats' to date!
 
 Did here:  
 - Cleaned up some comments and disabled lines from previous iteration.   
-- Moved this source code file, now named "WordsAndWindows" (cf previously "NotAgain")
-from the default package to a package I made called "embyr333.notagain". 
-(Also changed the other class name (from KeyLogger to KeyLoggerWordChecker)).
-"NotAgain" is still the name of the project/program, with "notagain" now the last 
-element of the containing package. This allows me to drop class name prefixes 
-referencing members between classes (by writing import statements), but, more 
-importantly, I know it is the 'right thing to do' (even though I hate clicking 
-through subdirectories!) in anticipation of possible issues with use of default 
-package that I haven't personally encountered yet :p  
-I also note that with the addition of the package structure I now seem to have 
-the option of placing the WordleSolutions.txt resource file in the NetBeans src 
-folder or in any level of the package folder tree; however I will leave position 
-as-is for the moment; may later put it in a 'resources' directory, and with 
-additional parent folders if making into a Maven project etc.
+
+============================================================================================================================
+- 
 
 
-Version/intermediate:   220610_1257
+Version/intermediate:   ====================================================================================================
  */
 
+package embyr333.notagain; 
 
-package embyr333.notagain; // --file is now in newly-added package...
 
-// ...so can write static imports to avoid needing to prefix WordsAndWindows 
-// static member names with class names when accessing between classes
-// (not worth doing the reverse for KeyLoggerWordChecker class, though)
+/* Static imports to avoid needing to prefix WordsAndWindows 
+ * static member names with class names when accessing between classes
+ * (not worth doing the reverse for KeyLoggerWordChecker class, though) */
 import static embyr333.notagain.WordsAndWindows.processingKeystrokes;
 import static embyr333.notagain.WordsAndWindows.dTextArea;
 import static embyr333.notagain.WordsAndWindows.toAvoidWords;
 import static embyr333.notagain.WordsAndWindows.repeatWordTextField;
 import static embyr333.notagain.WordsAndWindows.frameForPopup;
-
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -85,21 +73,28 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
+//import org.jnativehook.GlobalScreen;
+//import org.jnativehook.NativeHookException;
+//import org.jnativehook.keyboard.NativeKeyEvent;
+//import org.jnativehook.keyboard.NativeKeyListener;
+// -- Switching from use of  old version jnativehook.jar (old/first version)
+//    dependency to jnativehook-2.2.2.jar (latest version), it seems the above 
+//    file names (paths) need to be replaced by...
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.NativeHookException;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 
-public class WordsAndWindows // --renamed from NotAgain
+public class WordsAndWindows 
 {
-    // Main GUI components...
+    /* Main GUI components... */
     
     private static JFrame frame = new JFrame("NotAgain"); // Contains all the other main GUI components 
     private static JPanel upperPanel = new JPanel(new BorderLayout()); // For buttons
     private static JPanel lowerPanel = new JPanel(new BorderLayout()); // For text areas   
     
-    // Variables to allow startButton transition to a Pause-Restart toggle
-    // where Pause prevents key presses being processed until Reatart engaged
+    /* Variables to allow startButton transition to a Pause-Restart toggle
+     * where Pause prevents key presses being processed until Restart engaged */
     private static int startButtonState = 0; 
     static boolean processingKeystrokes = true; 
     private static String sayPause = "Pause";    
@@ -109,28 +104,24 @@ public class WordsAndWindows // --renamed from NotAgain
     
     private static JButton startButton = new JButton("Start"); // Button to start keylogger-driven code
     
-    // Button and associated variables to allow use to choose whether  
-    // GUI stays on top of other windows
+    /* Button and associated variables to allow use to choose whether
+     * GUI stays on top of other windows */
     private static boolean whetherStaysOnTop = false; 
     private static String onTopButtonTextYes = "Keep on top of other windows";    
     private static String onTopButtonTextNo = "Allow overlay by other windows";    
     private static JButton onTopButton = new JButton(onTopButtonTextYes);     
          
-    // Text area to display current value of nascentWord in the logger code
+    /* Text area and associated label to display current value of nascentWord in the logger code */
     private static JLabel dLabel = new JLabel("<html>" + // To explain the dTextArea below
             "If the letters in your Wordle input don't match those displayed below " + "<br>" +
             "(because you typed in another context at some point without pausing), " + "<br>" +
             "just delete and retype as needed while outside of the Wordle page. " + "</html>");
-    
     static JTextArea dTextArea = new JTextArea(2, 20);  
     
-    
-    // Coomponents for 'repeat warningTextField popup' window (previouly used a  
-    // JOptionPane but that allowed little custonisation of font and window sizes etc.)...
-    
+    /* Coomponents for 'repeat warningTextField popup' window (previouly used a
+     * JOptionPane but that allowed little custonisation of font and window sizes etc.)...  */
     static JTextField repeatWordTextField = new JTextField();
     static JTextField warningTextField = new JTextField("is a former Wordle solution!");
-    
     static JButton okButton = new JButton("<html>" + 
             "<p style=\"font-size:17px; text-align: center;\">" +
             "OK" + "</p><br>" +
@@ -140,26 +131,34 @@ public class WordsAndWindows // --renamed from NotAgain
     static JFrame frameForPopup = new JFrame();
     
     
-    // Access external text file containing the set of Wordle solutions.
-    // This file must be kept in same directory as the GUI used to run the program
-    // (or, on Netbeans IDE, in the (first level of) the project folder for the program).
+    /* For accessing the text file resource containing the listing of Wordle solutions. */
     private static File toAvoidFile = new File("WordleSolutions.txt"); 
     
-    // Calculating the solution number/position in the list...
-    private static LocalDate currentDate = LocalDate.now(); // Today's date (from computer clock)
-    // Date representing the day when the first of the current solutions 
-    // list would have appeared if there had been no changes to list    
+    
+    /* Calculating the solution number/position in the listing... */
+    
+    /* Today's date (from computer clock) */
+    private static LocalDate currentDate = LocalDate.now(); 
+    
+    /* Date representing the day when the first of the current solutions 
+     * list would have appeared if there had been no changes to list */
     private static LocalDate startDate = LocalDate.of(2021, Month.JUNE, 18);
+    
     private static long daysSinceStartDate = Duration.between
         (startDate.atStartOfDay(), currentDate.atStartOfDay()).toDays();
     
-    // Object into which the words will be read and stored for checking     
+    
+    /* Object into which the words will be read and stored for checking */
     static StringBuilder toAvoidWords = new StringBuilder();           
 
-    static // Set up the GUIs when class accesed
-    { // (...or maybe I could just transfer the contained code to main())      
+    
+    /** Static block to set up the GUIs when class accessed
+     * (...or maybe I could just transfer the contained code to main method
+     *  or put it in a separate method */
+    static 
+    {     
         
-        // Main GUI...
+        /* Main GUI... */
         
         startButton.addActionListener(
             new ActionListener() 
@@ -170,7 +169,7 @@ public class WordsAndWindows // --renamed from NotAgain
                     {
                         KeyLoggerWordChecker.main(); // Start the keylogger to respond to user typing
                         startButton.setText(sayPause);
-                        startButtonState = 1; // Next stste will be Pause 
+                        startButtonState = 1; // Next state will be Pause 
                     }
                     else if (startButtonState == 1) // Pause
                     {
@@ -215,7 +214,7 @@ public class WordsAndWindows // --renamed from NotAgain
 
         dTextArea.setEditable(false);
         dTextArea.setFont(new Font("SansSerif", Font.BOLD, 30)); 
-        dTextArea.setLineWrap(true); // (Probably irrelevant, but will leave here for the moent)
+        dTextArea.setLineWrap(true); // (Probably irrelevant, but will leave here for the moment)
         dTextArea.setMargin(new Insets(5, 5, 5, 5)); 
         lowerPanel.add(dTextArea, BorderLayout.SOUTH);
 
@@ -227,7 +226,7 @@ public class WordsAndWindows // --renamed from NotAgain
         frame.pack(); 
 
         
-        // 'Repeat warning' popup window...
+        /* 'Repeat warning' popup window... */
                             
         repeatWordTextField.setEditable(false);                            
         repeatWordTextField.setFont(new Font("SansSerif", Font.BOLD, 30)); 
@@ -255,8 +254,8 @@ public class WordsAndWindows // --renamed from NotAgain
         // avoid expanding to full width frame under border layout)        
         okButtonPanel.setBackground(Color.YELLOW); 
     
-        frameForPopup.setAlwaysOnTop(true); // Make sure popup is not hidden under other windows
-        //  under other windows, including the Wordle browser window in which the user is typing        
+        frameForPopup.setAlwaysOnTop(true); // Make sure popup is not hidden under other 
+        // windows, including the Wordle browser window in which the user is typing        
         frameForPopup.add(repeatWordTextField, BorderLayout.NORTH); 
         frameForPopup.add(warningTextField, BorderLayout.CENTER); 
         frameForPopup.add(okButtonPanel, BorderLayout.SOUTH); 
@@ -278,7 +277,8 @@ public class WordsAndWindows // --renamed from NotAgain
     
     public static void main(String[] args)
     {
-        try // Set toAvoidWordsAsString to content of the external text file...
+        /* Set toAvoidWordsAsString to content of the external text file... */
+        try // 
         {
             if(toAvoidFile.exists())     
             {
@@ -324,25 +324,24 @@ public class WordsAndWindows // --renamed from NotAgain
         + toAvoidWords); // Confirmed               
         
         System.out.println("Press Start button on GUI to begin keylogger..."); 
-        // (Prints to console will not be seen by user running GUI from executable file, 
-        // but keeping for the moment for checks during development)
     }
 }
 
-// Keylogger implementation in terms of ability to respond to key presses modified from
-// https://github.com/vakho10/java-keylogger/blob/master/src/main/java/ge/vakho/KeyLogger.java
-// hope OK to do this (can't see a License declaration) - thanks to author!
-// Thanks also to JNativeHook author, whose binary this program uses (dependency)
-class KeyLoggerWordChecker implements NativeKeyListener // --changed name from KeyLogger
+/* Keylogger implementation in terms of ability to respond to key presses modified from
+ * https://github.com/vakho10/java-keylogger/blob/master/src/main/java/ge/vakho/KeyLogger.java
+ * hope OK to do this (can't see a License declaration; thought I saw them quote
+   snippet in StackOverflow or similar site but cannot now find that) - thanks to author! 
+ * Thanks also to JNativeHook author, whose binary this program uses (dependency) */
+class KeyLoggerWordChecker implements NativeKeyListener 
 {       
-    // Object To keep track of current letters in the Wordle 5-letter entry field
+    /* Object To keep track of current letters in the Wordle 5-letter entry field */
     private static StringBuilder nascentWord = new StringBuilder(); 
     
+    /* Field to allow delay below in clearing nascentWord after Enter key pressed,
+     * in case user needs to Backspace some letters making a guess not in Wordle.
+     * May come up with a more concise way to arrange the decision series that
+     * uses this field below in the future, but seems to work as intended so far. */
     private static boolean enterWasLastKeyPressed = false;  
-    // Allows delay below in clearing nascentWord after Enter key pressed
-    // in case user needs to Backspace some letters making a guess not in Wordle.
-    // May come up with a more concise way to arrange the decision series that
-    // uses this field below in the future, but seems to work as intended so far.
 
     public static void main() 
     {       
@@ -375,7 +374,6 @@ class KeyLoggerWordChecker implements NativeKeyListener // --changed name from K
 
     public void nativeKeyPressed(NativeKeyEvent e) // Runs each time a key pressed
     {
-//        if (WordsAndWindows.processingKeystrokes)  --can drop class name prefix now (import added)
         if (processingKeystrokes) // Condition to allow Pause/Restart
         {
             String keyText = NativeKeyEvent.getKeyText(e.getKeyCode());
@@ -385,7 +383,7 @@ class KeyLoggerWordChecker implements NativeKeyListener // --changed name from K
                 if (enterWasLastKeyPressed == false) // Restricts to first time 
                 { // Enter presed before a reset, in case user preses multile times
                     System.out.println("Wordle guess entered!"); // (Not seen by user)
-//                    WordsAndWindows.dTextArea.append("    entered");  --can drop class name prefix now (import added)
+//                    WordsAndWindows.dTextArea.append("    entered");  
                     dTextArea.append("    entered");   
                 }
                 enterWasLastKeyPressed = true;   
@@ -396,7 +394,6 @@ class KeyLoggerWordChecker implements NativeKeyListener // --changed name from K
                 if (nascentWord.length() > 0) 
                 {   // Update nascent repeatWordTextField by...
                     nascentWord.deleteCharAt((nascentWord.length() -1)); // ...deleting last letter                
-//                    WordsAndWindows.dTextArea.setText(nascentWord.toString()); --can drop class name prefix now (import added)
                     dTextArea.setText(nascentWord.toString()); // Then display to user
                     System.out.println("Previous letter deleted!");                 
                     enterWasLastKeyPressed = false; // Reset
@@ -419,7 +416,6 @@ class KeyLoggerWordChecker implements NativeKeyListener // --changed name from K
                 { // after 5, as Wordle state would not change (until Enter pressed)
                     System.out.print(keyText); 
                     nascentWord.append(keyText); // Update nascentWord...
-//                    WordsAndWindows.dTextArea.setText(nascentWord.toString());  --can drop class name prefix now (import added)
                     dTextArea.setText(nascentWord.toString()); // ...and display to user
                     System.out.print("    # letters in Wordle: " + nascentWord.length());
                     System.out.print("    being: " + nascentWord + "\n"); 
@@ -428,19 +424,15 @@ class KeyLoggerWordChecker implements NativeKeyListener // --changed name from K
                     {   
                         // Alert user if a 5-letter repeatWordTextField is present that has been 
                         // a previous Wordle solution (before they enter it as a guesss)
-//                        if (WordsAndWindows.toAvoidWords.toString().contains(nascentWord.toString().toLowerCase())) --can drop class name
                         if (toAvoidWords.toString().contains(nascentWord.toString().toLowerCase()))
                         { // (Words in external file happen to be lowercase while keylohgger returns uppercase letters)
                             System.out.println("Alert: this is a previous Wordle solution!");
 
-//                            WordsAndWindows.repeatWordTextField.setText(nascentWord.toString());  --can drop class name
                             repeatWordTextField.setText(nascentWord.toString());  
-//                            WordsAndWindows.frameForPopup.setVisible(true);  --can drop class name
                             frameForPopup.setVisible(true);
                         }          
                         else // Confirm to user in main display area that repeatWordTextField is not
                         { // previous Wordle solution when popup alert does not appear
-//                            WordsAndWindows.dTextArea.append("    :) not a repeat :)");  --can drop class name
                             dTextArea.append("    :) not a repeat :)");
                         }                                              
                     }     
@@ -449,8 +441,7 @@ class KeyLoggerWordChecker implements NativeKeyListener // --changed name from K
         }
     }
 
-    // These last 2 methods have to be 'implemented' to satisfy the
-    // NativeKeyListener contract, but are not needed to do anything here
+    /* ('Empty' implementations to satisfy NativeKeyListener contract, not needed to do anything here */
     public void nativeKeyReleased(NativeKeyEvent e) { }
     public void nativeKeyTyped(NativeKeyEvent e) { }
 }
