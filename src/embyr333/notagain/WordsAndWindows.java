@@ -27,16 +27,14 @@ accidentally resetting my Wordle cookies and losing 'stats' to date!
 
 Did here:  
 - Cleaned up some comments and disabled lines from previous iteration.   
+- Changed the four import statements for JNativeHook members to align with the 
+latest version of this dependency, 2.2.2, which is now being used
+(i.e. using jnativehook-2.2.2.jar rather than JNativeHook.jar
 
-============================================================================================================================
-- 
-
-
-Version/intermediate:   ====================================================================================================
+Version/intermediate:   220612_1813
  */
 
 package embyr333.notagain; 
-
 
 /* Static imports to avoid needing to prefix WordsAndWindows 
  * static member names with class names when accessing between classes
