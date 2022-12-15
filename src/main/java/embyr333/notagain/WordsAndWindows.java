@@ -26,12 +26,22 @@ made while Wordle in focus (user interacting with the page). Caveat: I'm wary of
 accidentally resetting my Wordle cookies and losing 'stats' to date!
 
 Did here:  
-- Cleaned up some comments and disabled lines from previous iteration.   
-- Changed the four import statements for JNativeHook members to align with the 
-latest version of this dependency, 2.2.2, which is now being used
-(i.e. using jnativehook-2.2.2.jar rather than JNativeHook.jar)
+- To allow WordleSolutions file test to be case-independent, changed the line
+                        if (toAvoidWords.toString().contains(nascentWord.toString().toLowerCase()))
+to
+                        if (toAvoidWords.toString().toUpperCase().contains(nascentWord.toString()))
+- Also note: This change, made on 20 Nov 2022 was associated with a change in the nature of 
+the 'WordleSolutions' text file from which the code takes a list of previously-used solutions.
+As the New York Times has now decided to 'curate' future solutions dynamically, there
+the previous full list of all past and future solutions is no more, and the best I can do 
+is package a list of past words to this date in the tex file; updates will have to be added manually, 
+probably easiest to just type in below last word (upper or lower case), as long as there is at least a 
+space or carriage return (new line), or anything at all other than a letter of the alphabet 
+between the words. The part of the code that took past solutions based on date of run is now 
+irrelevant (though should not interfere with use, and if the list is not updated the worst 
+that should happen is that the user will not be checking for the missing words.
 
-Version/intermediate:   220612_1813
+Version/intermediate:   221120_1420
  */
 
 package embyr333.notagain; 
@@ -422,8 +432,8 @@ class KeyLoggerWordChecker implements NativeKeyListener
                     {   
                         // Alert user if a 5-letter repeatWordTextField is present that has been 
                         // a previous Wordle solution (before they enter it as a guesss)
-                        if (toAvoidWords.toString().contains(nascentWord.toString().toLowerCase()))
-                        { // (Words in external file happen to be lowercase while keylohgger returns uppercase letters)
+                        if (toAvoidWords.toString().toUpperCase().contains(nascentWord.toString()))
+                        { // (keylohgger returns uppercase letters)
                             System.out.println("Alert: this is a previous Wordle solution!");
 
                             repeatWordTextField.setText(nascentWord.toString());  
