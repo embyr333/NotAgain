@@ -2,7 +2,7 @@
 
 # NotAgain
 
-Java program to alert Wordle players if they're about to waste a guess on a previous solution
+Java program to alert Wordle players if they're about to waste a guess on a previous solution …UPDATE: sadly redundant as of Feb 2026, when the New York Times decided to drop the condition that previous solutions would not be re-used! Maybe it could be re-purposed for another task?
 
 Dependencies (in addition to JDK 8): https://github.com/kwhat/jnativehook
 (Release used here is jnativehook-2.2.2.jar)
